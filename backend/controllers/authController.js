@@ -32,3 +32,48 @@ exports.login = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// Get User Profile
+exports.getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Update User Profile
+exports.updateProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (user) {
+      user.name = req.body.name || user.name;
+      user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
+      user.avatar = req.body.avatar || user.avatar;
+
+      if (req.body.password) {
+        user.password = req.body.password;
+      }
+
+      const updatedUser = await user.save();
+      res.json({
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        role: updatedUser.role,
+        phoneNumber: updatedUser.phoneNumber,
+        avatar: updatedUser.avatar
+      });
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
