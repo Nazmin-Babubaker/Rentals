@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const authRoutes = require('./routes/authRoute');
 const carRoutes = require('./routes/carRoute');
+const bookingRoutes = require('./routes/bookingRoute');
 
 dotenv.config();
 connectDB();
@@ -21,6 +22,8 @@ const PORT = process.env.PORT ;
 
 app.use('/auth', authRoutes);
 app.use('/api/cars', carRoutes);
+app.use('/api/bookings', bookingRoutes);
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
