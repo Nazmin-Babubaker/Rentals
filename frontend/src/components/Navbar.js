@@ -34,6 +34,11 @@ export default function Navbar() {
           <div className="hidden sm:flex items-center">
             {user ? (
               <>
+                {user.role === 'admin' && (
+                  <Link href="/admin" className="mr-6 text-sm font-bold tracking-widest uppercase hover:text-gray-500 transition-colors">
+                    Admin Portal
+                  </Link>
+                )}
                 <Link href="/profile" className="text-sm font-bold tracking-widest uppercase hover:text-gray-500 transition-colors">
                   {user.name}
                 </Link>
