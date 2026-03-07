@@ -31,15 +31,18 @@ export default function AdminLayout({ children }) {
   }
 
   return (
-    <div className="flex flex-col md:flex-row min-h-[calc(100vh-64px)] w-full bg-white text-black font-sans">
+    <div className="flex flex-col md:flex-row min-h-[calc(100vh-64px)] w-full bg-white text-black font-sans pt-16 md:pt-20">
       
       {/* Admin Sidebar */}
-      <aside className="w-full md:w-64 border-r border-gray-200 bg-gray-50 flex-shrink-0">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-xl font-black uppercase tracking-tighter">Admin Portal</h2>
-          <p className="text-xs text-gray-400 mt-1 uppercase tracking-widest">Command Center</p>
+      <aside className="w-full md:w-64 border-b md:border-b-0 md:border-r border-gray-200 bg-gray-50 flex-shrink-0">
+        <div className="p-4 md:p-6 border-b border-gray-200 flex justify-between items-center md:block">
+          <div>
+            <h2 className="text-xl font-black uppercase tracking-tighter">Admin Portal</h2>
+            <p className="text-xs text-gray-400 mt-1 uppercase tracking-widest hidden md:block">Command Center</p>
+          </div>
+          <button className="md:hidden text-xs font-bold uppercase tracking-widest border border-black px-4 py-2 font-black" onClick={() => document.getElementById('admin-nav').classList.toggle('hidden')}>Menu</button>
         </div>
-        <nav className="p-4 space-y-2">
+        <nav id="admin-nav" className="hidden md:block p-4 space-y-2">
           <Link href="/admin" className="block px-4 py-3 text-sm font-bold uppercase tracking-widest hover:bg-gray-200 transition-colors">
             Dashboard
           </Link>
@@ -56,7 +59,7 @@ export default function AdminLayout({ children }) {
       </aside>
 
       {/* Admin Content Area */}
-      <main className="flex-1 p-8 overflow-y-auto">
+      <main className="flex-1 p-4 md:p-8 overflow-y-auto">
         {children}
       </main>
       
