@@ -26,6 +26,14 @@ app.use('/api/cars', carRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/users', userRoutes);
 
+const uploadRoutes = require('./routes/uploadRoute');
+const path = require('path');
+app.use('/api/upload', uploadRoutes);
+
+// Make uploads folder static
+const dirname = path.resolve();
+app.use('/uploads', express.static(path.join(dirname, '/uploads')));
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

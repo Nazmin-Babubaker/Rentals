@@ -1,17 +1,20 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-// Placeholder data for our vehicle fleet
-const fleet = [
-  { id: 1, name: "Model 01", category: "Premium Series", price: 180, image: "https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&q=80&w=800" },
-  { id: 2, name: "Model 02", category: "Sport Edition", price: 220, image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=800" },
-  { id: 3, name: "Model 03", category: "Executive SUV", price: 250, image: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&q=80&w=800" },
-  { id: 4, name: "Model 04", category: "Premium Series", price: 190, image: "https://images.unsplash.com/photo-1617469767053-d3b523a0b982?auto=format&fit=crop&q=80&w=800" },
-  { id: 5, name: "Model 05", category: "Electric", price: 160, image: "https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&q=80&w=800" },
-  { id: 6, name: "Model 06", category: "Grand Tourer", price: 300, image: "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&q=80&w=800" },
-];
+async function getCars() {
+  try {
+    const res = await fetch('http://localhost:5000/api/cars', { cache: 'no-store' });
+    if (!res.ok) throw new Error('Failed to fetch');
+    return res.json();
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
 
-export default function CarsPage() {
+export default async function CarsPage() {
+  const fleet = await getCars();
+
   return (
     <div className="flex flex-col w-full bg-white text-black font-sans pt-12">
       {/* Header Section */}
@@ -30,25 +33,25 @@ export default function CarsPage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {fleet.map((car) => (
-              <div key={car.id} className="group bg-white p-6 border border-gray-200 hover:border-black transition-colors duration-300 flex flex-col h-full">
+              <div key={car._id} className="group bg-white p-6 border border-gray-200 hover:border-black transition-colors duration-300 flex flex-col h-full">
                 <div className="h-64 w-full bg-gray-100 mb-8 relative overflow-hidden flex items-center justify-center">
                   <div 
                     className="absolute inset-0 bg-cover bg-center grayscale opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
-                    style={{ backgroundImage: `url(${car.image})` }}
+                    style={{ backgroundImage: `url(${car.images?.[0] || 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=800'})` }}
                   ></div>
                 </div>
                 
-                <h3 className="text-2xl font-black uppercase tracking-tight mb-1">{car.name}</h3>
-                <p className="text-gray-500 text-sm mb-6 uppercase tracking-wider">{car.category}</p>
+                <h3 className="text-2xl font-black uppercase tracking-tight mb-1">{car.brand} {car.model}</h3>
+                <p className="text-gray-500 text-sm mb-6 uppercase tracking-wider">{car.year} • {car.fuelType}</p>
                 
                 <div className="w-full h-[1px] bg-gray-200 mb-6"></div>
                 
                 <div className="flex justify-between items-end mt-auto">
                   <div className="text-left">
                     <span className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">D/Rate</span>
-                    <span className="text-xl font-bold font-mono">${car.price}</span>
+                    <span className="text-xl font-bold font-mono">${car.pricePerDay}</span>
                   </div>
-                  <Link href={`/cars/${car.id}`} className="text-xs font-bold uppercase tracking-widest text-black border border-black px-4 py-2 hover:bg-black hover:text-white transition-colors duration-200">
+                  <Link href={`/cars/${car._id}`} className="text-xs font-bold uppercase tracking-widest text-black border border-black px-4 py-2 hover:bg-black hover:text-white transition-colors duration-200">
                     Details
                   </Link>
                 </div>

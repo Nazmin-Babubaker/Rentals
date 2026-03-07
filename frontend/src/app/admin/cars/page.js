@@ -8,14 +8,14 @@ export default function AdminCarsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [isAdding, setIsAdding] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const { token } = useAuth();
 
   // Form state
   const [formData, setFormData] = useState({
-    brand: '', name: '', maxSpeed: '', acceleration: '',
-    fuelType: 'electric', transmission: 'automatic',
-    seatingCapacity: 4, images: [''], pricePerDay: '',
-    isAvailable: true
+    brand: '', model: '', year: new Date().getFullYear(), pricePerDay: '',
+    transmission: 'Automatic', fuelType: 'Electric', seats: 4, 
+    images: [], isAvailable: true, description: '', location: ''
   });
 
   const fetchCars = async () => {
@@ -53,15 +53,39 @@ export default function AdminCarsPage() {
       if (res.ok) {
         setIsAdding(false);
         setFormData({
-          brand: '', name: '', maxSpeed: '', acceleration: '',
-          fuelType: 'electric', transmission: 'automatic',
-          seatingCapacity: 4, images: [''], pricePerDay: '',
-          isAvailable: true
+            brand: '', model: '', year: new Date().getFullYear(), pricePerDay: '',
+            transmission: 'Automatic', fuelType: 'Electric', seats: 4, 
+            images: [], isAvailable: true, description: '', location: ''
         });
         fetchCars();
       }
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const uploadFileHandler = async (e) => {
+    const file = e.target.files[0];
+    const formDataObj = new FormData();
+    formDataObj.append('image', file);
+    setUploadingImage(true);
+
+    try {
+      const res = await fetch('http://localhost:5000/api/upload', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formDataObj
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setFormData({ ...formData, images: [...formData.images, `http://localhost:5000${data.image}`] });
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setUploadingImage(false);
     }
   };
 
@@ -116,14 +140,42 @@ export default function AdminCarsPage() {
           <form onSubmit={handleCreateCar} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <input type="text" placeholder="Brand (e.g., Porsche)" required value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})} className="px-4 py-3 border border-gray-300 focus:outline-none focus:border-black" />
-              <input type="text" placeholder="Model Name" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="px-4 py-3 border border-gray-300 focus:outline-none focus:border-black" />
+              <input type="text" placeholder="Model Name (e.g., 911)" required value={formData.model} onChange={e => setFormData({...formData, model: e.target.value})} className="px-4 py-3 border border-gray-300 focus:outline-none focus:border-black" />
+              <input type="number" placeholder="Year" required value={formData.year} onChange={e => setFormData({...formData, year: e.target.value})} className="px-4 py-3 border border-gray-300 focus:outline-none focus:border-black" />
               <input type="number" placeholder="Daily Rate ($)" required value={formData.pricePerDay} onChange={e => setFormData({...formData, pricePerDay: e.target.value})} className="px-4 py-3 border border-gray-300 focus:outline-none focus:border-black" />
-              <input type="number" placeholder="Max Speed (mph)" value={formData.maxSpeed} onChange={e => setFormData({...formData, maxSpeed: e.target.value})} className="px-4 py-3 border border-gray-300 focus:outline-none focus:border-black" />
-              <input type="number" placeholder="0-60 mph (sec)" value={formData.acceleration} onChange={e => setFormData({...formData, acceleration: e.target.value})} className="px-4 py-3 border border-gray-300 focus:outline-none focus:border-black" />
-              <input type="text" placeholder="Image URL" value={formData.images[0]} onChange={e => setFormData({...formData, images: [e.target.value]})} className="px-4 py-3 border border-gray-300 focus:outline-none focus:border-black" />
+              
+              <select value={formData.transmission} onChange={e => setFormData({...formData, transmission: e.target.value})} className="px-4 py-3 border border-gray-300 focus:outline-none focus:border-black bg-white appearance-none text-gray-700">
+                <option value="Automatic">Automatic</option>
+                <option value="Manual">Manual</option>
+              </select>
+
+              <select value={formData.fuelType} onChange={e => setFormData({...formData, fuelType: e.target.value})} className="px-4 py-3 border border-gray-300 focus:outline-none focus:border-black bg-white appearance-none text-gray-700">
+                <option value="Electric">Electric</option>
+                <option value="Petrol">Petrol</option>
+                <option value="Diesel">Diesel</option>
+                <option value="Hybrid">Hybrid</option>
+              </select>
+
+              <input type="number" placeholder="Seats" required value={formData.seats} onChange={e => setFormData({...formData, seats: e.target.value})} className="px-4 py-3 border border-gray-300 focus:outline-none focus:border-black" />
+              <input type="text" placeholder="Location" required value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} className="px-4 py-3 border border-gray-300 focus:outline-none focus:border-black" />
+            </div>
+
+            <textarea placeholder="Description" required value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black min-h-[100px]" />
+
+            <div>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Upload Image</label>
+              <input type="file" onChange={uploadFileHandler} className="w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-6 file:border-0 file:text-xs file:font-bold file:uppercase file:tracking-widest file:bg-black file:text-white hover:file:bg-gray-800 transition-colors cursor-pointer" />
+              {uploadingImage && <p className="text-xs text-gray-500 mt-2">Uploading...</p>}
+              {formData.images.length > 0 && (
+                <div className="mt-4 flex gap-4">
+                  {formData.images.map((img, i) => (
+                    <img key={i} src={img} alt="Uploaded car" className="w-24 h-24 object-cover border border-gray-200" />
+                  ))}
+                </div>
+              )}
             </div>
             
-            <button type="submit" className="w-full text-xs font-bold uppercase tracking-widest text-white bg-black px-6 py-4 hover:bg-gray-800 transition-colors">
+            <button type="submit" disabled={uploadingImage} className="w-full text-xs font-bold uppercase tracking-widest text-white bg-black px-6 py-4 hover:bg-gray-800 transition-colors disabled:opacity-50">
               Save Vehicle to Fleet
             </button>
           </form>
@@ -143,7 +195,10 @@ export default function AdminCarsPage() {
           <tbody>
             {cars.map((car) => (
               <tr key={car._id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                <td className="p-4 font-medium">{car.brand} {car.name}</td>
+                <td className="p-4 font-medium flex items-center gap-4">
+                  {car.images?.length > 0 && <img src={car.images[0]} alt={car.model} className="w-12 h-8 object-cover rounded shadow-sm" />}
+                  {car.brand} {car.model}
+                </td>
                 <td className="p-4 text-gray-600">${car.pricePerDay}</td>
                 <td className="p-4">
                   <span className={`px-2 py-1 text-xs font-bold uppercase tracking-wider ${car.isAvailable ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>

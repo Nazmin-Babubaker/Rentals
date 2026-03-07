@@ -20,8 +20,9 @@ exports.createBooking = async (req, res) => {
       return res.status(400).json({ message: "Car is already booked for these dates" });
     }
 
-    const days = Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24));
-    if (days < 1) return res.status(400).json({ message: "Invalid date range" });
+    const diffDays = Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24));
+    if (diffDays < 0) return res.status(400).json({ message: "Invalid date range" });
+    const days = diffDays === 0 ? 1 : diffDays;
 
     const totalPrice = days * car.pricePerDay;
 

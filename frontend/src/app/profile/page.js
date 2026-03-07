@@ -22,6 +22,10 @@ export default function ProfilePage() {
   const [passwordStatus, setPasswordStatus] = useState({ type: '', message: '' });
   const [isPasswordSaving, setIsPasswordSaving] = useState(false);
 
+  // Bookings State
+  const [bookings, setBookings] = useState([]);
+  const [loadingBookings, setLoadingBookings] = useState(true);
+
   // Protected route logic
   useEffect(() => {
     if (!loading && !user) {
@@ -50,8 +54,40 @@ export default function ProfilePage() {
   useEffect(() => {
     if (user && token) {
       fetchProfile();
+      fetchMyBookings();
     }
   }, [user, token]);
+
+  const fetchMyBookings = async () => {
+    try {
+      const res = await fetch('http://localhost:5000/api/bookings/my-bookings', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        setBookings(await res.json());
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingBookings(false);
+    }
+  };
+
+  const handleCancelBooking = async (id) => {
+    if (window.confirm("Are you sure you want to cancel this reservation?")) {
+      try {
+        const res = await fetch(`http://localhost:5000/api/bookings/${id}/cancel`, {
+          method: 'PUT',
+          headers: { 
+            'Authorization': `Bearer ${token}` 
+          }
+        });
+        if (res.ok) fetchMyBookings();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -274,12 +310,42 @@ export default function ProfilePage() {
 
             <section>
               <h2 className="text-sm font-bold tracking-widest uppercase text-gray-400 mb-6">Recent Activity</h2>
-              <div className="border border-gray-200 p-12 text-center bg-gray-50">
-                <p className="text-gray-500">You have no active or past rental bookings.</p>
-                <Link href="/cars" className="inline-block mt-4 text-xs font-bold uppercase tracking-widest text-black border border-black px-6 py-3 hover:bg-black hover:text-white transition-colors duration-200">
-                  Browse Fleet
-                </Link>
-              </div>
+              {loadingBookings ? (
+                <div className="border border-gray-200 p-12 text-center bg-gray-50">
+                  <p className="text-sm font-bold tracking-widest uppercase text-gray-500">Loading Reservations...</p>
+                </div>
+              ) : bookings.length === 0 ? (
+                <div className="border border-gray-200 p-12 text-center bg-gray-50">
+                  <p className="text-gray-500">You have no active or past rental bookings.</p>
+                  <Link href="/cars" className="inline-block mt-4 text-xs font-bold uppercase tracking-widest text-black border border-black px-6 py-3 hover:bg-black hover:text-white transition-colors duration-200">
+                    Browse Fleet
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {bookings.map(b => (
+                    <div key={b._id} className="border border-gray-200 p-6 flex flex-col md:flex-row justify-between md:items-center bg-white">
+                      <div>
+                        <h3 className="text-lg font-black uppercase">{b.car?.brand} {b.car?.model}</h3>
+                        <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-1">
+                          {new Date(b.startDate).toLocaleDateString()} - {new Date(b.endDate).toLocaleDateString()}
+                        </p>
+                        <p className="text-xs mt-2 uppercase tracking-widest">
+                          Status: <span className={`font-bold ${b.status === 'Completed' ? 'text-green-600' : b.status === 'Cancelled' ? 'text-red-600' : 'text-yellow-600'}`}>{b.status}</span>
+                        </p>
+                      </div>
+                      <div className="mt-4 md:mt-0 text-left md:text-right flex flex-col items-end">
+                        <p className="text-xl font-black font-mono mb-2">${b.totalPrice}</p>
+                        {b.status !== 'Cancelled' && b.status !== 'Completed' && (
+                          <button onClick={() => handleCancelBooking(b._id)} className="text-xs font-bold uppercase tracking-widest text-red-600 border border-red-600 px-4 py-2 hover:bg-red-50 transition-colors">
+                            Cancel
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </section>
           </div>
 

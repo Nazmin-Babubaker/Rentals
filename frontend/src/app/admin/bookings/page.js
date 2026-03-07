@@ -70,25 +70,35 @@ export default function AdminBookingsPage() {
             {bookings.map((b) => (
               <tr key={b._id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                 <td className="p-4 font-mono text-xs">{b._id.slice(-6)}</td>
-                <td className="p-4 font-medium">{b.car?.name || 'Unknown Vehicle'}</td>
+                <td className="p-4 font-medium">{b.car ? `${b.car.brand} ${b.car.model}` : 'Unknown Vehicle'}</td>
                 <td className="p-4 text-sm text-gray-600">
                   {new Date(b.startDate).toLocaleDateString()} - {new Date(b.endDate).toLocaleDateString()}
                 </td>
                 <td className="p-4">
                   <span className={`px-2 py-1 text-xs font-bold uppercase tracking-wider 
-                    ${b.status === 'completed' ? 'bg-green-100 text-green-800' : 
-                      b.status === 'cancelled' ? 'bg-red-100 text-red-800' : 
+                    ${b.status === 'Completed' ? 'bg-green-100 text-green-800' : 
+                      b.status === 'Cancelled' ? 'bg-red-100 text-red-800' : 
+                      b.status === 'Confirmed' ? 'bg-blue-100 text-blue-800' :
                       'bg-yellow-100 text-yellow-800'}`}>
                     {b.status}
                   </span>
                 </td>
-                <td className="p-4 text-right space-x-2">
-                  <button onClick={() => handleStatusUpdate(b._id, 'completed')} className="text-xs font-bold uppercase tracking-widest text-green-600 hover:underline">
-                    Approve
-                  </button>
-                  <button onClick={() => handleStatusUpdate(b._id, 'cancelled')} className="text-xs font-bold uppercase tracking-widest text-red-600 hover:underline">
-                    Cancel
-                  </button>
+                <td className="p-4 text-right space-x-4">
+                  {b.status === 'Pending' && (
+                    <button onClick={() => handleStatusUpdate(b._id, 'Confirmed')} className="text-xs font-bold uppercase tracking-widest text-blue-600 hover:underline">
+                      Approve
+                    </button>
+                  )}
+                  {b.status === 'Confirmed' && (
+                    <button onClick={() => handleStatusUpdate(b._id, 'Completed')} className="text-xs font-bold uppercase tracking-widest text-green-600 hover:underline">
+                      Complete
+                    </button>
+                  )}
+                  {b.status !== 'Cancelled' && b.status !== 'Completed' && (
+                    <button onClick={() => handleStatusUpdate(b._id, 'Cancelled')} className="text-xs font-bold uppercase tracking-widest text-red-600 hover:underline">
+                      Cancel
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}
