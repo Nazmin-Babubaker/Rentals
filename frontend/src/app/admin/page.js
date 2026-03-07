@@ -85,11 +85,10 @@ export default function AdminDashboardPage() {
       {/* Revenue stat */}
       <div className="border border-gray-200 bg-white p-8 flex items-center justify-between">
         <div>
-          <h2 className="text-xs font-bold tracking-widest uppercase text-gray-400 mb-2">Confirmed Revenue</h2>
+          <h2 className="text-xs font-bold tracking-widest uppercase text-gray-400 mb-2"> Revenue</h2>
           <p className="text-4xl font-black">{loading ? '—' : `$${stats.revenue.toFixed(2)}`}</p>
         </div>
         <div className="text-right">
-          <p className="text-xs font-bold tracking-widest uppercase text-gray-400 mb-2">Awaiting Confirmation</p>
           <p className={`text-4xl font-black ${stats.pendingPayments > 0 ? 'text-yellow-600' : ''}`}>
             {loading ? '—' : stats.pendingPayments}
           </p>

@@ -11,7 +11,7 @@ export default function AboutPage() {
         </h1>
         <div className="w-24 h-2 bg-black mb-12"></div>
         <p className="text-xl md:text-2xl text-gray-500 font-light max-w-3xl leading-relaxed">
-          DRIVE was founded on a singular principle: cut the noise, deliver the experience. 
+          Rentals.co was founded on a singular principle: cut the noise, deliver the experience. 
           We provide access to the world’s most premium vehicles without the typical rental friction.
         </p>
       </section>

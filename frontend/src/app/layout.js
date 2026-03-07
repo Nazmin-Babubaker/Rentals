@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Drive Rentals - Premium Car Rentals",
+  title: "Rentals.co - Premium Car Rentals",
   description: "Browse and find the best rental cars available for your journey.",
 };
 
