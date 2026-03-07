@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import PaymentModal from '@/components/PaymentModal';
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API = process.env.NEXT_PUBLIC_API_URL;
 
 const STATUS_COLOR = {
   Completed: 'text-green-600',

@@ -5,7 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import PaymentModal from '@/components/PaymentModal';
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API = process.env.NEXT_PUBLIC_API_URL;
 
 export default function BookingForm({ car }) {
   const { user, token } = useAuth();
@@ -20,12 +20,10 @@ export default function BookingForm({ car }) {
   const [status, setStatus]         = useState({ type: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Holds the created booking — triggers PaymentModal when set
   const [createdBooking, setCreatedBooking] = useState(null);
 
   const today = new Date().toISOString().split('T')[0];
 
-  // ── Price calc ──────────────────────────────────────────────────────────────
   const calculateDays = () => {
     if (!startDate || !endDate) return 0;
     const start = new Date(`${startDate}T${startTime}`);
@@ -40,7 +38,6 @@ export default function BookingForm({ car }) {
   const taxesAndFees   = days > 0 ? 32.50 : 0;
   const displayTotal   = carHireCharge + protectionPlan + taxesAndFees;
 
-  // ── Create booking ──────────────────────────────────────────────────────────
   const handleBooking = async (e) => {
     e.preventDefault();
 
@@ -88,9 +85,6 @@ export default function BookingForm({ car }) {
       if (!res.ok)
         return setStatus({ type: 'error', message: data.message || 'Failed to reserve vehicle.' });
 
-      // Booking created — pass to PaymentModal
-      // Backend populates car on createBooking, but if it comes back as just an ID,
-      // fall back to the car prop we already have
       const bookingForModal = {
         ...data,
         _id: data._id,
@@ -113,13 +107,11 @@ export default function BookingForm({ car }) {
     }
   };
 
-  // Payment confirmed → go to profile to see the confirmed booking
   const handlePaymentSuccess = (updatedBooking) => {
     console.log('[BookingForm] Payment success, redirecting to profile');
     router.push('/profile');
   };
 
-  // User dismissed modal without paying → still go to profile (can pay later)
   const handlePaymentSkip = () => {
     router.push('/profile');
   };
@@ -131,7 +123,7 @@ export default function BookingForm({ car }) {
     <>
       <div className="flex flex-col lg:flex-row gap-8 items-start">
 
-        {/* ── Left: Forms ── */}
+        {/*Left: Forms*/}
         <div className="flex-1 space-y-6 w-full">
 
           {status.message && (
@@ -240,7 +232,7 @@ export default function BookingForm({ car }) {
           </form>
         </div>
 
-        {/* ── Right: Summary ── */}
+        {/*Right: Summary*/}
         <div className="w-full lg:w-[400px] flex-shrink-0">
           <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm sticky top-24">
             <h2 className="text-xl font-bold text-gray-900 mb-6">Booking Summary</h2>

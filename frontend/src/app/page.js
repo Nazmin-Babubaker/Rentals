@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
+const API = process.env.NEXT_PUBLIC_API_URL;
 
 async function getFeaturedCars() {
   try {
-    const res = await fetch('http://localhost:5000/api/cars', { cache: 'no-store' });
+    const res = await fetch(`${API}/api/cars`, { cache: 'no-store' });
     if (!res.ok) throw new Error('Failed to fetch');
     return res.json();
   } catch (error) {
