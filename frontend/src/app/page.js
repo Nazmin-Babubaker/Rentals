@@ -45,7 +45,7 @@ export default async function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter uppercase mb-8">Less Noise. More Drive.</h2>
           <p className="max-w-3xl mx-auto text-xl text-gray-600 font-light leading-relaxed">
-            We stripped away the complicated paperwork, the hidden fees, and the unnecessary up-sells. What's left is a pure, seamless connection between you and the machine.
+            We stripped away the complicated paperwork, the hidden fees, and the unnecessary up-sells. What&apos;s left is a pure, seamless connection between you and the machine.
           </p>
           <div className="w-24 h-1 bg-black mx-auto mt-16 mb-8"></div>
         </div>

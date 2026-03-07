@@ -21,7 +21,7 @@ export default function LoginPage() {
     const result = await login(email, password);
     
     if (result.success) {
-      router.push('/');
+      router.push('/cars');
     } else {
       setError(result.message || 'Failed to login');
       setIsLoading(false);
@@ -29,29 +29,29 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex flex-col w-full min-h-[calc(100vh-160px)] bg-white text-black font-sans items-center justify-center py-20 px-4">
-      <div className="w-full max-w-md">
+    <div className="flex flex-col w-full min-h-[calc(100vh-160px)] bg-white/50 text-black items-center justify-center py-20 px-4">
+      <div className="w-full max-w-md bg-white border border-gray-300 rounded-lg p-8 sm:p-10 shadow-sm">
         
         {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-4">
-            Sign In
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            Login
           </h1>
-          <p className="text-gray-500 font-light">
-            Enter your details to access your DRIVE account.
+          <p className="text-sm text-gray-500">
+            Access your car rental account
           </p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 text-sm font-bold text-center">
+          <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-600 text-sm font-medium rounded text-center">
             {error}
           </div>
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <label htmlFor="email" className="block text-xs font-bold text-gray-500 uppercase tracking-widest">
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="space-y-1.5">
+            <label htmlFor="email" className="block text-sm font-semibold text-gray-700">
               Email Address
             </label>
             <input 
@@ -62,20 +62,15 @@ export default function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="email" 
               required 
-              className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-colors"
-              placeholder="name@example.com"
+              className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded text-gray-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-colors"
+              placeholder="your@email.com"
             />
           </div>
 
-          <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <label htmlFor="password" className="block text-xs font-bold text-gray-500 uppercase tracking-widest">
-                Password
-              </label>
-              <Link href="#" className="text-xs font-bold text-black uppercase tracking-widest hover:underline hover:text-gray-600 transition-colors">
-                Forgot?
-              </Link>
-            </div>
+          <div className="space-y-1.5">
+            <label htmlFor="password" className="block text-sm font-semibold text-gray-700">
+              Password
+            </label>
             <input 
               id="password" 
               name="password" 
@@ -84,33 +79,31 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password" 
               required 
-              className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-colors"
+              className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded text-gray-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-colors"
               placeholder="••••••••"
             />
+            <div className="flex justify-end mt-2">
+              <Link href="#" className="text-sm text-gray-500 hover:text-gray-800 transition-colors underline decoration-gray-400 underline-offset-4">
+                Forgot password?
+              </Link>
+            </div>
           </div>
 
           <button 
             type="submit" 
             disabled={isLoading}
-            className="w-full py-4 mt-8 text-sm font-bold tracking-widest uppercase text-white bg-black hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-300 flex justify-center items-center"
+            className="w-full py-3 mt-4 text-sm font-semibold text-white bg-[#1e2329] rounded hover:bg-black disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200 flex justify-center items-center shadow-sm"
           >
-            {isLoading ? 'Signing In...' : 'Sign In'}
+            {isLoading ? 'Logging In...' : 'Login'}
           </button>
         </form>
 
-        {/* Divider */}
-        <div className="mt-10 mb-8 flex items-center justify-center">
-          <div className="w-full h-[1px] bg-gray-200"></div>
-          <span className="px-4 text-xs font-bold text-gray-400 uppercase tracking-widest bg-white">Or</span>
-          <div className="w-full h-[1px] bg-gray-200"></div>
-        </div>
-
         {/* Create Account Link */}
-        <div className="text-center">
+        <div className="text-center mt-6">
           <p className="text-sm text-gray-600">
-            Don't have an account?{' '}
-            <Link href="/signup" className="font-bold text-black uppercase tracking-widest hover:underline underline-offset-4">
-              Create One
+            Don&apos;t have an account?{' '}
+            <Link href="/signup" className="font-semibold text-gray-900 hover:underline underline-offset-4">
+              Register here
             </Link>
           </p>
         </div>

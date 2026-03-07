@@ -28,10 +28,10 @@ export default function AboutPage() {
               <h2 className="text-sm font-bold tracking-widest uppercase text-gray-400 mb-4">Our Philosophy</h2>
               <h3 className="text-4xl md:text-5xl font-black tracking-tighter uppercase mb-8">Less Paperwork.<br/>More Asphalt.</h3>
               <p className="text-lg text-gray-600 font-light mb-6">
-                The traditional car rental model is broken. It's built on hidden fees, up-sells, and long lines at airport counters.
+                The traditional car rental model is broken. It&apos;s built on hidden fees, up-sells, and long lines at airport counters.
               </p>
               <p className="text-lg text-gray-600 font-light mb-8">
-                We stripped everything away. You browse our curated fleet, reserve your vehicle online, and walk straight to the driver's seat. Your phone is your key. Your journey is your own.
+                We stripped everything away. You browse our curated fleet, reserve your vehicle online, and walk straight to the driver&apos;s seat. Your phone is your key. Your journey is your own.
               </p>
               <Link href="/cars" className="text-xs font-bold uppercase tracking-widest text-black border-b-2 border-black pb-1 self-start hover:text-gray-500 hover:border-gray-500 transition-colors">
                 View the Fleet →
@@ -50,7 +50,7 @@ export default function AboutPage() {
               <span className="text-6xl font-black mb-6">01.</span>
               <h4 className="text-xl font-bold uppercase tracking-widest mb-4">Curation</h4>
               <p className="text-gray-400 font-light px-4">
-                We don't do economy boxes. Every vehicle in our fleet is hand-selected for performance, design, and driving pleasure.
+                We don&apos;t do economy boxes. Every vehicle in our fleet is hand-selected for performance, design, and driving pleasure.
               </p>
             </div>
             
