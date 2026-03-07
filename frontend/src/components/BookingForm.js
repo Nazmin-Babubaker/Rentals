@@ -13,6 +13,12 @@ export default function BookingForm({ carId, pricePerDay }) {
   const [status, setStatus] = useState({ type: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Helper to get local datetime string for the min attribute
+  const getLocalMinDateTime = () => {
+    const tzoffset = new Date().getTimezoneOffset() * 60000;
+    return new Date(Date.now() - tzoffset).toISOString().slice(0, 16);
+  };
+
   const calculateDays = () => {
     if (!startDate || !endDate) return 0;
     const start = new Date(startDate);
@@ -79,22 +85,22 @@ export default function BookingForm({ carId, pricePerDay }) {
       <form onSubmit={handleBooking} className="space-y-6">
         <div className="grid grid-cols-2 gap-6">
           <div className="space-y-2">
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest">Pick-up Date</label>
+            <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest">Pick-up Date & Time</label>
             <input 
-              type="date" 
+              type="datetime-local" 
               required 
-              min={new Date().toISOString().split('T')[0]}
+              min={getLocalMinDateTime()}
               value={startDate} 
               onChange={e => setStartDate(e.target.value)} 
               className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors" 
             />
           </div>
           <div className="space-y-2">
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest">Return Date</label>
+            <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest">Return Date & Time</label>
             <input 
-              type="date" 
+              type="datetime-local" 
               required 
-              min={startDate || new Date().toISOString().split('T')[0]}
+              min={startDate || getLocalMinDateTime()}
               value={endDate} 
               onChange={e => setEndDate(e.target.value)} 
               className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors" 

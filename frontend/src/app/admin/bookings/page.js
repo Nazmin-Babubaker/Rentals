@@ -72,7 +72,9 @@ export default function AdminBookingsPage() {
                 <td className="p-4 font-mono text-xs">{b._id.slice(-6)}</td>
                 <td className="p-4 font-medium">{b.car ? `${b.car.brand} ${b.car.model}` : 'Unknown Vehicle'}</td>
                 <td className="p-4 text-sm text-gray-600">
-                  {new Date(b.startDate).toLocaleDateString()} - {new Date(b.endDate).toLocaleDateString()}
+                  <div className="whitespace-nowrap">{new Date(b.startDate).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' })}</div>
+                  <div className="text-gray-400 text-xs text-center border-t border-gray-200 mt-1 pt-1">to</div>
+                  <div className="whitespace-nowrap">{new Date(b.endDate).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' })}</div>
                 </td>
                 <td className="p-4">
                   <span className={`px-2 py-1 text-xs font-bold uppercase tracking-wider 

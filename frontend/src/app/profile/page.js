@@ -328,7 +328,11 @@ export default function ProfilePage() {
                       <div>
                         <h3 className="text-lg font-black uppercase">{b.car?.brand} {b.car?.model}</h3>
                         <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-1">
-                          {new Date(b.startDate).toLocaleDateString()} - {new Date(b.endDate).toLocaleDateString()}
+                          {new Date(b.startDate).toLocaleString(undefined, {
+                            month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                          })} - {new Date(b.endDate).toLocaleString(undefined, {
+                            month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                          })}
                         </p>
                         <p className="text-xs mt-2 uppercase tracking-widest">
                           Status: <span className={`font-bold ${b.status === 'Completed' ? 'text-green-600' : b.status === 'Cancelled' ? 'text-red-600' : 'text-yellow-600'}`}>{b.status}</span>
