@@ -14,14 +14,35 @@ exports.createCar = async (req, res) => {
 
 exports.getCars = async (req, res) => {
   try {
-    const { brand, fuelType, maxPrice } = req.query;
-    let query = { isAvailable: true };
+    const { brand, fuelType, maxPrice, all } = req.query;
+    let query = {};
+    if (all !== 'true') {
+      query.isAvailable = true;
+    }
 
     if (brand) query.brand = brand;
     if (fuelType) query.fuelType = fuelType;
     if (maxPrice) query.pricePerDay = { $lte: Number(maxPrice) };
 
     const cars = await Car.find(query).sort({ createdAt: -1 });
+    res.json(cars);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.searchCarsByLocation = async (req, res) => {
+  try {
+    const { location } = req.query;
+    if (!location) {
+      return res.status(400).json({ message: "Location is required" });
+    }
+    
+    const cars = await Car.find({
+      isAvailable: true,
+      location: { $regex: location, $options: 'i' }
+    }).sort({ createdAt: -1 });
+    
     res.json(cars);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -41,15 +62,14 @@ exports.getCarById = async (req, res) => {
 
 exports.updateCar = async (req, res) => {
   try {
-    const car = await Car.findById(req.params.id);
-
-    if (!car) return res.status(404).json({ message: "Car not found" });
-
     const updatedCar = await Car.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true, runValidators: true } 
+      { new: true, runValidators: true }
     );
+
+    if (!updatedCar)
+      return res.status(404).json({ message: 'Car not found' });
 
     res.json(updatedCar);
   } catch (error) {

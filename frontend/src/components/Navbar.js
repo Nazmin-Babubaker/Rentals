@@ -33,9 +33,7 @@ export default function Navbar() {
             <Link href="/cars" className="text-gray-500 hover:text-gray-900 px-1 py-1 text-sm font-medium transition-colors">
               Fleet
             </Link>
-            <Link href="/locations" className="text-gray-500 hover:text-gray-900 px-1 py-1 text-sm font-medium transition-colors">
-              Locations
-            </Link>
+            
             <Link href="/about" className="text-gray-500 hover:text-gray-900 px-1 py-1 text-sm font-medium transition-colors">
               About
             </Link>
