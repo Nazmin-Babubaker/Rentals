@@ -16,6 +16,12 @@ export default function ProfilePage() {
   const [editForm, setEditForm] = useState({ name: '', phoneNumber: '' });
   const [isSaving, setIsSaving] = useState(false);
 
+  // Password State
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [passwordStatus, setPasswordStatus] = useState({ type: '', message: '' });
+  const [isPasswordSaving, setIsPasswordSaving] = useState(false);
+
   // Protected route logic
   useEffect(() => {
     if (!loading && !user) {
@@ -83,6 +89,42 @@ export default function ProfilePage() {
       } catch (error) {
         console.error("Failed to delete account", error);
       }
+    }
+  };
+
+  const handlePasswordUpdate = async (e) => {
+    e.preventDefault();
+    setPasswordStatus({ type: '', message: '' });
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      return setPasswordStatus({ type: 'error', message: 'New passwords do not match.' });
+    }
+    if (passwordForm.newPassword.length < 8) {
+      return setPasswordStatus({ type: 'error', message: 'New password must be at least 8 characters long.' });
+    }
+
+    setIsPasswordSaving(true);
+    try {
+      const res = await fetch('http://localhost:5000/auth/change-password', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ currentPassword: passwordForm.currentPassword, newPassword: passwordForm.newPassword })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setPasswordStatus({ type: 'success', message: 'Password updated successfully.' });
+        setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        setTimeout(() => { setIsChangingPassword(false); setPasswordStatus({ type: '', message: '' }); }, 3000);
+      } else {
+        setPasswordStatus({ type: 'error', message: data.message || 'Failed to update password.' });
+      }
+    } catch (error) {
+      console.error("Password update error", error);
+      setPasswordStatus({ type: 'error', message: 'An error occurred.' });
+    } finally {
+      setIsPasswordSaving(false);
     }
   };
 
@@ -195,6 +237,41 @@ export default function ProfilePage() {
               </div>
             </section>
 
+            {isChangingPassword && (
+              <section>
+                <h2 className="text-sm font-bold tracking-widest uppercase text-gray-400 mb-6">Change Password</h2>
+                <div className="bg-gray-50 p-8 border border-gray-200">
+                  {passwordStatus.message && (
+                    <div className={`mb-6 p-4 text-sm font-bold text-center border ${passwordStatus.type === 'error' ? 'bg-red-50 border-red-200 text-red-600' : 'bg-green-50 border-green-200 text-green-600'}`}>
+                      {passwordStatus.message}
+                    </div>
+                  )}
+                  <form onSubmit={handlePasswordUpdate} className="space-y-6">
+                    <div className="space-y-2">
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest">Current Password</label>
+                      <input type="password" required value={passwordForm.currentPassword} onChange={e => setPasswordForm({...passwordForm, currentPassword: e.target.value})} className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-colors" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest">New Password</label>
+                      <input type="password" required value={passwordForm.newPassword} onChange={e => setPasswordForm({...passwordForm, newPassword: e.target.value})} className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-colors" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest">Confirm New Password</label>
+                      <input type="password" required value={passwordForm.confirmPassword} onChange={e => setPasswordForm({...passwordForm, confirmPassword: e.target.value})} className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-colors" />
+                    </div>
+                    <div className="pt-6 border-t border-gray-200 flex gap-4">
+                      <button type="submit" disabled={isPasswordSaving} className="text-xs font-bold uppercase tracking-widest text-white bg-black px-6 py-3 hover:bg-gray-800 transition-colors disabled:opacity-50">
+                        {isPasswordSaving ? 'Saving...' : 'Update Password'}
+                      </button>
+                      <button type="button" onClick={() => {setIsChangingPassword(false); setPasswordStatus({type: '', message: ''})}} className="text-xs font-bold uppercase tracking-widest text-black border border-black px-6 py-3 hover:bg-gray-100 transition-colors">
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </section>
+            )}
+
             <section>
               <h2 className="text-sm font-bold tracking-widest uppercase text-gray-400 mb-6">Recent Activity</h2>
               <div className="border border-gray-200 p-12 text-center bg-gray-50">
@@ -211,7 +288,7 @@ export default function ProfilePage() {
             <h2 className="text-sm font-bold tracking-widest uppercase text-gray-400 mb-6">Account Settings</h2>
             <ul className="space-y-4">
               <li>
-                <button className="text-sm font-bold hover:underline underline-offset-4">Change Password</button>
+                <button onClick={() => setIsChangingPassword(true)} className="text-sm font-bold hover:underline underline-offset-4">Change Password</button>
               </li>
               <li>
                 <button className="text-sm font-bold hover:underline underline-offset-4">Payment Methods</button>
