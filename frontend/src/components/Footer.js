@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-1">
             <span className="text-2xl font-black text-black tracking-tighter">
-              DRIVE.
+              Rentals.co
             </span>
             <p className="mt-4 text-sm text-gray-500 max-w-xs">
               Curated minimal experiences. Premium vehicles only.
